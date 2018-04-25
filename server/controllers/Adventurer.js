@@ -14,13 +14,13 @@ const makerPage = (req, res) => {
 };
 
 const makeAdventurer = (req, res) => {
-  if (!req.body.name || !req.body.age) {
+  if (!req.body.name || !req.body.level) {
     return res.status(400).json({ error: 'Dear Adventurer, you must fill all fields' });
   }
 
   const adventurerData = {
     name: req.body.name,
-    age: req.body.age,
+    level: req.body.level,
     class: req.body.class,
     owner: req.session.account._id,
   };
@@ -58,7 +58,7 @@ const getAdventurers = (request, response) => {
   });
 };
 
-const ageUpAdventurer = (req, res) => {
+const levelUpAdventurer = (req, res) => {
   Adventurer.AdventurerModel.upAge(req.session.account._id, req.body._id, (err, doc) => {
     if (err) {
       console.log(err);
@@ -69,7 +69,7 @@ const ageUpAdventurer = (req, res) => {
 
     const adventurer = doc;
 
-    adventurer.age++;
+    adventurer.level++;
 
     const newAdventurer = new Adventurer.AdventurerModel(adventurer);
 
@@ -84,4 +84,4 @@ const ageUpAdventurer = (req, res) => {
 module.exports.makerPage = makerPage;
 module.exports.getAdventurers = getAdventurers;
 module.exports.make = makeAdventurer;
-module.exports.ageUp = ageUpAdventurer;
+module.exports.levelUp = levelUpAdventurer;

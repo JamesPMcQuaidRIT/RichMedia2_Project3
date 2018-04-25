@@ -89,6 +89,12 @@ var handlePassword = function handlePassword(e) {
     return false;
 };
 
+var handleBarracks = function handleBarracks(e) {
+    e.preventDefault();
+
+    return false;
+};
+
 var AdventurerForm = function AdventurerForm(props) {
     return React.createElement(
         "form",
@@ -107,10 +113,10 @@ var AdventurerForm = function AdventurerForm(props) {
         React.createElement("input", { id: "adventurerName", type: "text", name: "name", placeholder: "Adventurer Name" }),
         React.createElement(
             "label",
-            { htmlFor: "age" },
+            { htmlFor: "level" },
             "Level: "
         ),
-        React.createElement("input", { id: "adventurerAge", type: "text", name: "age", placeholder: "Adventurer Level" }),
+        React.createElement("input", { id: "adventurerAge", type: "text", name: "level", placeholder: "Adventurer Level" }),
         React.createElement(
             "select",
             { id: "adventurerClass", name: "class" },
@@ -173,7 +179,7 @@ var AdventurerList = function AdventurerList(props) {
                 "h3",
                 { className: "adventurerAge" },
                 "Level: ",
-                adventurer.age
+                adventurer.level
             ),
             React.createElement(
                 "h3",
@@ -183,16 +189,16 @@ var AdventurerList = function AdventurerList(props) {
             ),
             React.createElement(
                 "form",
-                { id: "ageForm",
+                { id: "levelForm",
                     onSubmit: handleAgeUp,
-                    name: "ageForm",
-                    action: "/age",
+                    name: "levelForm",
+                    action: "/level",
                     method: "POST",
-                    className: "ageForm"
+                    className: "levelForm"
                 },
                 React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
                 React.createElement("input", { id: "adventurerNameCheck", name: "_id", type: "hidden", value: adventurer._id, placeholder: "Adventurer Name" }),
-                React.createElement("input", { className: "ageButton", type: "submit", value: "Level Up" })
+                React.createElement("input", { className: "levelButton", type: "submit", value: "Level Up" })
             )
         );
     });
@@ -466,6 +472,85 @@ var createPasswordWindow = function createPasswordWindow(csrf) {
     ReactDOM.render(React.createElement(PasswordWindow, { csrf: csrf }), document.querySelector("#data"));
 };
 
+var BarracksForm = function BarracksForm(props) {
+    return React.createElement(
+        "form",
+        { id: "barracksForm",
+            onSubmit: handleBarracks,
+            name: "barracksForm",
+            action: "/barracksMaker",
+            method: "POST",
+            className: "barracksForm"
+        },
+        React.createElement(
+            "label",
+            { htmlFor: "adventurer" },
+            "Adventurer: "
+        ),
+        React.createElement(AdventurerContent, { adventurers: props.adventurers }),
+        React.createElement(
+            "label",
+            { htmlFor: "weapon" },
+            "Weapon: "
+        ),
+        React.createElement("select", { id: "weapon", type: "text", name: "weapon" }),
+        React.createElement(
+            "label",
+            { htmlFor: "rarity" },
+            "Spell: "
+        ),
+        React.createElement("select", { id: "spell", type: "text", name: "spell" }),
+        React.createElement("input", { id: "csrfValue", type: "hidden", name: "_csrf", value: props.csrf }),
+        React.createElement("input", { className: "makeWeaponSubmit", type: "submit", value: "Make Weapon" })
+    );
+};
+
+var AdventurerContent = function AdventurerContent(props) {
+    console.dir(props);
+    if (props.adventurers.length === 0) {
+        return React.createElement(
+            "option",
+            null,
+            "No Adventurers"
+        );
+    }
+
+    var adventurerOptions = props.adventurers.map(function (adventurer) {
+        return React.createElement(
+            "option",
+            { value: "{adventurer}" },
+            adventurer.name
+        );
+    });
+
+    return React.createElement(
+        "select",
+        { id: "adventurer", type: "text", name: "adventurer" },
+        adventurerOptions
+    );
+};
+
+var loadAdventurersToBarracks = function loadAdventurersToBarracks(csrf) {
+    sendAjax('GET', '/getAdventurers', null, function (data) {
+        ReactDOM.render(React.createElement(BarracksForm, { adventurers: data.adventurer, csrf: csrf }), document.querySelector("#make"));
+
+        ReactDOM.render(React.createElement(EmptyList, null), document.querySelector("#data"));
+    });
+};
+
+var EmptyList = function EmptyList(props) {
+    return null;
+};
+
+var createBarracksWindow = function createBarracksWindow(csrf) {
+    console.log("Test");
+    ReactDOM.render(React.createElement(BarracksForm, { adventurers: [], csrf: csrf }), document.querySelector("#make"));
+
+    ReactDOM.render(React.createElement(EmptyList, null), document.querySelector("#data"));
+
+    loadAdventurersToBarracks(csrf);
+};
+
 var setup = function setup(csrf) {
 
     token = csrf;
@@ -474,6 +559,7 @@ var setup = function setup(csrf) {
     var spellButton = document.querySelector("#spellButton");
     var weaponButton = document.querySelector("#weaponButton");
     var passwordButton = document.querySelector("#passwordButton");
+    var barracksButton = document.querySelector("#barracksButton");
 
     adventurerButton.addEventListener("click", function (e) {
         e.preventDefault();
@@ -496,6 +582,12 @@ var setup = function setup(csrf) {
     passwordButton.addEventListener("click", function (e) {
         e.preventDefault();
         createPasswordWindow(csrf);
+        return false;
+    });
+
+    barracksButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        createBarracksWindow(csrf);
         return false;
     });
 

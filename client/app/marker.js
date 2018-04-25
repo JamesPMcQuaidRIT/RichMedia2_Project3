@@ -87,6 +87,12 @@ const handlePassword = (e) => {
     return false;
 };
 
+const handleBarracks = (e) => {
+    e.preventDefault();
+    
+    return false;
+};
+
 const AdventurerForm = (props) => {
     return (
     <form id="adventurerForm" 
@@ -98,8 +104,8 @@ const AdventurerForm = (props) => {
     >
     <label htmlFor="name">Name: </label>
     <input id="adventurerName" type="text" name="name" placeholder="Adventurer Name"/>
-    <label htmlFor="age">Level: </label>
-    <input id="adventurerAge" type="text" name="age" placeholder="Adventurer Level"/>
+    <label htmlFor="level">Level: </label>
+    <input id="adventurerAge" type="text" name="level" placeholder="Adventurer Level"/>
     <select id="adventurerClass" name="class">
          <option value="Barbarian">Barbarian</option>
          <option value="Monk">Monk</option>  
@@ -127,19 +133,19 @@ const AdventurerList = function(props) {
             <div data-key={adventurer._id} className="adventurer">
                 <img src="/assets/img/adventurerface.png" alt="adventurer face" className="adventurerFace" />
                 <h3 className="adventurerName">Name: {adventurer.name}</h3>
-                <h3 className="adventurerAge">Level: {adventurer.age}</h3>
+                <h3 className="adventurerAge">Level: {adventurer.level}</h3>
                 <h3 className="adventurerClass">Class: {adventurer.class}</h3>
 
-                <form id="ageForm" 
+                <form id="levelForm" 
                     onSubmit={handleAgeUp}
-                    name="ageForm"
-                    action="/age"
+                    name="levelForm"
+                    action="/level"
                     method="POST"
-                    className="ageForm"
+                    className="levelForm"
                 >
                     <input type="hidden" name="_csrf" value={props.csrf}/>
                     <input id="adventurerNameCheck" name="_id" type="hidden" value={adventurer._id} placeholder="Adventurer Name"/>
-                    <input className="ageButton" type="submit" value="Level Up"/>
+                    <input className="levelButton" type="submit" value="Level Up"/>
                 </form>
             </div>
         );
@@ -358,6 +364,81 @@ const createPasswordWindow = (csrf) => {
     );
 };
 
+
+const BarracksForm = (props) => {
+    return (
+    <form id="barracksForm" 
+        onSubmit={handleBarracks}
+        name="barracksForm"
+        action="/barracksMaker"
+        method="POST"
+        className="barracksForm"
+    >
+    <label htmlFor="adventurer">Adventurer: </label>
+    <AdventurerContent adventurers={props.adventurers}></AdventurerContent>
+    <label htmlFor="weapon">Weapon: </label>
+    <select id="weapon" type="text" name="weapon">
+    </select>
+    <label htmlFor="rarity">Spell: </label>
+    <select id="spell" type="text" name="spell">
+    </select>
+    <input id="csrfValue" type="hidden" name="_csrf" value={props.csrf}/>
+    <input className="makeWeaponSubmit" type="submit" value="Make Weapon" />
+    </form>
+    );
+};
+
+const AdventurerContent = function(props){
+    console.dir(props);
+    if(props.adventurers.length === 0) {
+        return (
+            <option>No Adventurers</option>
+        );
+    }
+    
+    const adventurerOptions = props.adventurers.map(function(adventurer) {
+        return (
+            <option value="{adventurer}">{adventurer.name}</option>
+        );
+    });
+    
+    return (
+        <select id="adventurer" type="text" name="adventurer">
+            {adventurerOptions}
+        </select>
+    );
+};
+
+const loadAdventurersToBarracks = (csrf) => {
+    sendAjax('GET', '/getAdventurers', null, (data) => {
+        ReactDOM.render(
+            <BarracksForm adventurers={data.adventurer} csrf={csrf} />, document.querySelector("#make")
+        );
+        
+        ReactDOM.render(
+            <EmptyList />, document.querySelector("#data")
+        );
+    });
+};
+
+const EmptyList = (props) => {
+    return(null);
+};
+
+
+const createBarracksWindow = (csrf) => {
+    console.log("Test");
+    ReactDOM.render(
+        <BarracksForm adventurers={[]} csrf={csrf} />, document.querySelector("#make")
+    );
+    
+    ReactDOM.render(
+        <EmptyList />, document.querySelector("#data")
+    );
+    
+    loadAdventurersToBarracks(csrf);
+};
+
 const setup = function(csrf) {
     
     token = csrf;
@@ -366,6 +447,7 @@ const setup = function(csrf) {
     const spellButton = document.querySelector("#spellButton");
     const weaponButton = document.querySelector("#weaponButton");
     const passwordButton = document.querySelector("#passwordButton");
+    const barracksButton = document.querySelector("#barracksButton");
     
     adventurerButton.addEventListener("click", (e) => {
         e.preventDefault();
@@ -388,6 +470,12 @@ const setup = function(csrf) {
     passwordButton.addEventListener("click", (e) => {
         e.preventDefault();
         createPasswordWindow(csrf);
+        return false;
+    });
+    
+    barracksButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        createBarracksWindow(csrf);
         return false;
     });
     

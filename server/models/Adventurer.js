@@ -15,9 +15,9 @@ const AdventurerSchema = new mongoose.Schema({
     set: setName,
   },
 
-  age: {
+  level: {
     type: Number,
-    min: 0,
+    min: 1,
     required: true,
   },
 
@@ -25,6 +25,30 @@ const AdventurerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
+  /* strength: {
+    type: Number,
+    min: 1,
+    required: true,
+  },
+
+  dextrity: {
+    type: Number,
+    min: 1,
+    required: true,
+  },
+
+  intellect: {
+    type: Number,
+    min: 1,
+    required: true,
+  },
+
+  charisma: {
+    type: Number,
+    min: 1,
+    required: true,
+  },*/
 
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -40,7 +64,7 @@ const AdventurerSchema = new mongoose.Schema({
 
 AdventurerSchema.statics.toAPI = (doc) => ({
   name: doc.name,
-  age: doc.age,
+  level: doc.level,
   class: doc.class,
 });
 
@@ -49,7 +73,7 @@ AdventurerSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return AdventurerModel.find(search).select('name age class').exec(callback);
+  return AdventurerModel.find(search).select('name level class').exec(callback);
 };
 
 AdventurerSchema.statics.upAge = (ownerId, searchedId, callback) => {

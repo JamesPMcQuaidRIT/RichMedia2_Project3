@@ -60,7 +60,7 @@ const signup = (request, response) => {
       salt,
       password: hash,
     };
-      
+
     const newAccount = new Account.AccountModel(accountData);
 
     const savePromise = newAccount.save();
@@ -94,16 +94,16 @@ const changePassword = (request, response) => {
   }
 
   return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
-    const search = { username: req.session.account.username};
+    const search = { username: req.session.account.username };
     const newPassword = { password: hash, salt };
-      
+
     console.dir(search);
-            
-    return Account.AccountModel.findOneAndUpdate(search, {$set: newPassword}, (error) => {
-        if (error) {
-          return res.status(401).json({ error: 'Could not update passcode' });
-        }
-        return res.json({ redirect: '/marker' });
+
+    return Account.AccountModel.findOneAndUpdate(search, { $set: newPassword }, (error) => {
+      if (error) {
+        return res.status(401).json({ error: 'Could not update passcode' });
+      }
+      return res.json({ redirect: '/marker' });
     });
   });
 };

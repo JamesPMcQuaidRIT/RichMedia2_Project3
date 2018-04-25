@@ -10,7 +10,7 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
   app.get('/maker', mid.requiresLogin, controllers.Adventurer.makerPage);
   app.post('/maker', mid.requiresLogin, controllers.Adventurer.make);
-  app.post('/age', mid.requiresLogin, controllers.Adventurer.ageUp);
+  app.post('/level', mid.requiresLogin, controllers.Adventurer.levelUp);
   app.get('/getSpells', mid.requiresLogin, controllers.Spell.spellPage);
   app.post('/spellMaker', mid.requiresLogin, controllers.Spell.makeSpell);
   app.get('/getWeapons', mid.requiresLogin, controllers.Weapon.weaponPage);
