@@ -58,7 +58,7 @@ nav:nth-child(1) {
 .adventurerForm {
     border: 2px solid #705D4E;
     height: 35px;
-    width: 750px;
+    width: 100%;
     margin-top:0px;
     margin: 0 auto;
     padding-top:10px;
@@ -69,9 +69,18 @@ nav:nth-child(1) {
 
 .adventurerForm label {
     display: inline-block;
-    width: 75px;
-    margin-left: 10px;
+    width: 80px;
+    margin-left: 5px;
     font-size: 1.2em;
+    float: left;
+    color: white;
+}
+
+#statLabel{
+    display: inline-block;
+    width: 100px;
+    margin-left: 5px;
+    font-size: 1em;
     float: left;
     color: white;
 }
@@ -170,7 +179,7 @@ nav:nth-child(1) {
     display: inline-block;
     width: 100px;
     margin-left: 10px;
-    font-size: 1.2em;
+    font-size: 1em;
     float: left;
     color: white;
 }
@@ -358,7 +367,7 @@ h3.adventurerClass {
 }
 
 
-h3.adventurerAge {
+h3.adventurerLevel {
     float:left;
     text-align: left;
     width: 100px;

@@ -20,7 +20,9 @@ const makeWeapon = (req, res) => {
     return res.status(400).json({ error: 'Dear Adventurer, you must fill all fields' });
   }
 
-  if (parseInt(req.body.rarity, 10) < parseInt(req.body.damage, 10)) {
+ 
+
+  if (parseInt(req.body.rarity, 10) * 2 < parseInt(req.body.damage, 10)) {
     return res.status(400).json({ error: 'That Weapon is too powerful for how common it is' });
   }
 

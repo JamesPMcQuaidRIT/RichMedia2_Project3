@@ -5,7 +5,7 @@ const handleAdventurer = (e) => {
     
     $("#adventurerMessage").animate({width: 'hide'}, 350);
     
-    if($("#adventurerName").val() == '' || $("#adventurerAge").val() == '') {
+    if($("#adventurerName").val() == '' || $("#adventurerLevel").val() == '') {
         handleError("Dear Adventurer, you must fill all fields");
         return false;
     }
@@ -19,7 +19,7 @@ const handleAdventurer = (e) => {
     return false;
 };
 
-const handleAgeUp = (e) => {
+const handleLevelUp = (e) => {
     e.preventDefault();
     
     console.dir(e.target);
@@ -105,7 +105,16 @@ const AdventurerForm = (props) => {
     <label htmlFor="name">Name: </label>
     <input id="adventurerName" type="text" name="name" placeholder="Adventurer Name"/>
     <label htmlFor="level">Level: </label>
-    <input id="adventurerAge" type="text" name="level" placeholder="Adventurer Level"/>
+    <input id="adventurerLevel" type="text" name="level" placeholder="Adventurer Level"/>
+    <label id="statLabel">Stats(5 points per level):</label>
+    <label htmlFor="level">Strength: </label>
+    <input id="adventurerLevel" type="text" name="strength" placeholder="Strength"/>
+    <label htmlFor="level">Dexterity: </label>
+    <input id="adventurerLevel" type="text" name="dexterity" placeholder="Dexterity"/>
+    <label htmlFor="level">Intellect: </label>
+    <input id="adventurerLevel" type="text" name="intellect" placeholder="Intellect"/>
+    <label htmlFor="level">Charisma: </label>
+    <input id="adventurerLevel" type="text" name="charisma" placeholder="Charisma"/>
     <select id="adventurerClass" name="class">
          <option value="Barbarian">Barbarian</option>
          <option value="Monk">Monk</option>  
@@ -133,11 +142,11 @@ const AdventurerList = function(props) {
             <div data-key={adventurer._id} className="adventurer">
                 <img src="/assets/img/adventurerface.png" alt="adventurer face" className="adventurerFace" />
                 <h3 className="adventurerName">Name: {adventurer.name}</h3>
-                <h3 className="adventurerAge">Level: {adventurer.level}</h3>
+                <h3 className="adventurerLevel">Level: {adventurer.level}</h3>
                 <h3 className="adventurerClass">Class: {adventurer.class}</h3>
 
                 <form id="levelForm" 
-                    onSubmit={handleAgeUp}
+                    onSubmit={handleLevelUp}
                     name="levelForm"
                     action="/level"
                     method="POST"
@@ -215,7 +224,7 @@ const SpellList = function(props) {
             <div data-key={spell._id} className="adventurer">
                 <img src="/assets/img/magicIcon.png" alt="adventurer face" className="adventurerFace" />
                 <h3 className="adventurerName">Name: {spell.name}</h3>
-                <h3 className="adventurerAge">Level: {spell.level}</h3>
+                <h3 className="adventurerLevel">Level: {spell.level}</h3>
                 <h3 className="adventurerClass">Purpose: {spell.purpose}</h3>
             </div>
         );
@@ -264,9 +273,9 @@ const WeaponForm = (props) => {
     <input id="weaponName" type="text" name="name" placeholder="Weapon Name"/>
     <label htmlFor="type">Type: </label>
     <input id="weaponType" type="text" name="type" placeholder="Weapon Type"/>
-    <label htmlFor="rarity">Rarity: </label>
+    <label htmlFor="rarity">Rarity(1-10): </label>
     <input id="weaponRarity" type="text" name="rarity" placeholder="Weapon Rarity"/>
-    <label htmlFor="damage">Damage: </label>
+    <label htmlFor="damage">Damage(Up to 2x Rarity): </label>
     <input id="weaponDamage" type="text" name="damage" placeholder="Weapon Damage"/>
     <label htmlFor="description">Description: </label>
     <input id="weaponDescription" type="text" name="description" placeholder="Weapon Description"/>

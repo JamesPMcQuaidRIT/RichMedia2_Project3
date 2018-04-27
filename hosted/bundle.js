@@ -7,7 +7,7 @@ var handleAdventurer = function handleAdventurer(e) {
 
     $("#adventurerMessage").animate({ width: 'hide' }, 350);
 
-    if ($("#adventurerName").val() == '' || $("#adventurerAge").val() == '') {
+    if ($("#adventurerName").val() == '' || $("#adventurerLevel").val() == '') {
         handleError("Dear Adventurer, you must fill all fields");
         return false;
     }
@@ -21,7 +21,7 @@ var handleAdventurer = function handleAdventurer(e) {
     return false;
 };
 
-var handleAgeUp = function handleAgeUp(e) {
+var handleLevelUp = function handleLevelUp(e) {
     e.preventDefault();
 
     console.dir(e.target);
@@ -116,7 +116,36 @@ var AdventurerForm = function AdventurerForm(props) {
             { htmlFor: "level" },
             "Level: "
         ),
-        React.createElement("input", { id: "adventurerAge", type: "text", name: "level", placeholder: "Adventurer Level" }),
+        React.createElement("input", { id: "adventurerLevel", type: "text", name: "level", placeholder: "Adventurer Level" }),
+        React.createElement(
+            "label",
+            { id: "statLabel" },
+            "Stats(5 points per level):"
+        ),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            "Strength: "
+        ),
+        React.createElement("input", { id: "adventurerLevel", type: "text", name: "strength", placeholder: "Strength" }),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            "Dexterity: "
+        ),
+        React.createElement("input", { id: "adventurerLevel", type: "text", name: "dexterity", placeholder: "Dexterity" }),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            "Intellect: "
+        ),
+        React.createElement("input", { id: "adventurerLevel", type: "text", name: "intellect", placeholder: "Intellect" }),
+        React.createElement(
+            "label",
+            { htmlFor: "level" },
+            "Charisma: "
+        ),
+        React.createElement("input", { id: "adventurerLevel", type: "text", name: "charisma", placeholder: "Charisma" }),
         React.createElement(
             "select",
             { id: "adventurerClass", name: "class" },
@@ -177,7 +206,7 @@ var AdventurerList = function AdventurerList(props) {
             ),
             React.createElement(
                 "h3",
-                { className: "adventurerAge" },
+                { className: "adventurerLevel" },
                 "Level: ",
                 adventurer.level
             ),
@@ -190,7 +219,7 @@ var AdventurerList = function AdventurerList(props) {
             React.createElement(
                 "form",
                 { id: "levelForm",
-                    onSubmit: handleAgeUp,
+                    onSubmit: handleLevelUp,
                     name: "levelForm",
                     action: "/level",
                     method: "POST",
@@ -283,7 +312,7 @@ var SpellList = function SpellList(props) {
             ),
             React.createElement(
                 "h3",
-                { className: "adventurerAge" },
+                { className: "adventurerLevel" },
                 "Level: ",
                 spell.level
             ),
@@ -342,13 +371,13 @@ var WeaponForm = function WeaponForm(props) {
         React.createElement(
             "label",
             { htmlFor: "rarity" },
-            "Rarity: "
+            "Rarity(1-10): "
         ),
         React.createElement("input", { id: "weaponRarity", type: "text", name: "rarity", placeholder: "Weapon Rarity" }),
         React.createElement(
             "label",
             { htmlFor: "damage" },
-            "Damage: "
+            "Damage(Up to 2x Rarity): "
         ),
         React.createElement("input", { id: "weaponDamage", type: "text", name: "damage", placeholder: "Weapon Damage" }),
         React.createElement(
