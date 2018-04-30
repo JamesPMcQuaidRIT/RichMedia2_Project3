@@ -422,12 +422,14 @@ const PasswordWindow = (props) => {
         method="POST"
         className="mainForm"
     >
+    <label for="pass">Old Password: </label>
+    <input id="oldPass" type="password" name="oldPass" placeholder="old password"/>
     <label for="pass">New Password: </label>
     <input id="pass" type="password" name="pass" placeholder="password"/>
     <label for="pass2">New Password Again: </label>
     <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
     <input type="hidden" name="_csrf" value={props.csrf}/>
-    <input className="formSubmit" type="submit" value="Sign Up" />
+    <input className="formSubmit" type="submit" value="Update" />
     </form>
     );
 };
@@ -658,7 +660,7 @@ const MissionForm = (props) => {
         name="missionForm"
         action="/missionMaker"
         method="POST"
-        className="missionForm"
+        className="barracksForm"
     >
     <label htmlFor="title">Title: </label>
     <input id="missionTitle" type="text" name="title" placeholder="Mission Title"/>

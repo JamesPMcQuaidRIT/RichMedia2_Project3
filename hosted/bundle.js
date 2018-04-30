@@ -579,6 +579,12 @@ var PasswordWindow = function PasswordWindow(props) {
         React.createElement(
             "label",
             { "for": "pass" },
+            "Old Password: "
+        ),
+        React.createElement("input", { id: "oldPass", type: "password", name: "oldPass", placeholder: "old password" }),
+        React.createElement(
+            "label",
+            { "for": "pass" },
             "New Password: "
         ),
         React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password" }),
@@ -589,7 +595,7 @@ var PasswordWindow = function PasswordWindow(props) {
         ),
         React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password" }),
         React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-        React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign Up" })
+        React.createElement("input", { className: "formSubmit", type: "submit", value: "Update" })
     );
 };
 
@@ -844,7 +850,7 @@ var MissionForm = function MissionForm(props) {
             name: "missionForm",
             action: "/missionMaker",
             method: "POST",
-            className: "missionForm"
+            className: "barracksForm"
         },
         React.createElement(
             "label",

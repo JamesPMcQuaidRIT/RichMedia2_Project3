@@ -85,7 +85,7 @@ const changePassword = (request, response) => {
   const req = request;
   const res = response;
 
-  if (!req.body.pass || !req.body.pass2) {
+  if (!req.body.oldPass || !req.body.pass || !req.body.pass2) {
     return res.status(400).json({ error: 'Dear Adventurer you must fill all fields' });
   }
 
@@ -93,11 +93,14 @@ const changePassword = (request, response) => {
     return res.status(400).json({ error: 'Your given passcodes do not match' });
   }
 
-  return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
+    console.log(req.session.account.username);
+  return Account.AccountModel.authenticate(req.session.account.username, req.body.oldPass, (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'Wrong Passcode' });
+    }
+    return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
     const search = { username: req.session.account.username };
     const newPassword = { password: hash, salt };
-
-    console.dir(search);
 
     return Account.AccountModel.findOneAndUpdate(search, { $set: newPassword }, (error) => {
       if (error) {
@@ -106,6 +109,7 @@ const changePassword = (request, response) => {
       return res.json({ redirect: '/marker' });
     });
   });
+});
 };
 
 const getToken = (request, response) => {
