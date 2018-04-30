@@ -258,6 +258,57 @@ nav:nth-child(1) {
     background-color: #705D4E;
 }
 
+.barracksForm {
+    border: 2px solid #705D4E;
+    height: 35px;
+    width: 1000px;
+    margin-top:0px;
+    padding-top:10px;
+    background-color: #5E4E42;
+    margin: 0 auto;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.barracksForm label {
+    display: inline-block;
+    width: 100px;
+    margin-left: 10px;
+    font-size: 1.2em;
+    float: left;
+    color: white;
+}
+
+.barracksForm select {
+    float:left;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.barracksForm input[type=text] {
+    float:left;
+}
+
+.goAdventureSubmit {
+    transition: background-color 0.4s ease;
+    display: inline;
+    width: 120px;
+    background-color: #5E4E42;
+    border-radius: 2px;
+    color: white;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.goAdventureSubmit:link, .makevSubmit:visited, .makeSpellSubmit:hover, .makeSpellSubmit:active {
+    color: white;
+}
+
+.goAdventureSubmit:hover {
+    transition: background-color 0.4s ease;
+    background-color: #705D4E;
+}
+
 #user, #pass, #pass2 {
     text-align: center;
     font-size: 1.1em;

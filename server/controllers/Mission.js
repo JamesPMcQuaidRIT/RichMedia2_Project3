@@ -1,6 +1,7 @@
 const models = require('../models');
 
 const Mission = models.Mission;
+let activeMission;
 
 const missionPage = (req, res) => {
   Mission.MissionModel.findByOwner(req.session.account._id, (err, docs) => {
@@ -74,7 +75,6 @@ const performMission = (request, response) => {
     const mission = JSON.parse(req.body.mission);
     
     var roll = Math.random() * 20;
-    console.log(roll);
     
     switch(mission.type){
         case "Extermination":
@@ -88,20 +88,117 @@ const performMission = (request, response) => {
                 roll += adventurer.strength;
             } 
             break;
+        case "Diplomatic":
+            if(adventurer.class === "Paladin"){
+                roll += adventurer.charisma * 2;
+            } else {
+                roll += adventurer.charisma;
+            } 
+            break;
+        case "Research":
+            if(adventurer.class === "Wizard"){
+                roll += adventurer.intellect * 2;
+            } else if(adventurer.class === "Barbarian"){
+                roll += adventurer.intellect/2;
+            } else if(adventurer.class === "Rogue"){
+                roll += adventurer.intellect + adventurer.dexterity/2;
+            }else {
+                roll += adventurer.intellect;
+            } 
+            break;
+        case "Assassination":
+            if(adventurer.class === "Rogue"){
+                roll += adventurer.dexterity * 2;
+            } else if(adventurer.class === "Barbarian"){
+                roll += adventurer.dexterity + adventurer.strength/2;
+            } else if(adventurer.class === "Paladin"){
+                roll += adventurer.dexterity - adventurer.charisma;
+            }else {
+                roll += adventurer.dexterity;
+            } 
+            break;
+        case "Exploration":
+            if(adventurer.class === "Wizard"){
+                roll += adventurer.intellect - (10 - adventurer.strength);
+            } else if(adventurer.class === "Barbarian"){
+                roll += adventurer.intellect/2 + adventurer.strength/2;
+            } else if(adventurer.class === "Paladin"){
+                roll += adventurer.intellect/2 + adventurer.charisma/2;
+            } else {
+                roll += adventurer.intellect;
+            } 
+            break;
+       case "Trade":
+            if(adventurer.class === "Paladin"){
+                roll += adventurer.charisma * 2;
+            } else if(adventurer.class === "Barbarian"){
+                roll += adventurer.charisma/2 + adventurer.strength/2;
+            } else if(adventurer.class === "Wizard"){
+                roll += adventurer.intellect/2 + adventurer.charisma/2;
+            } else if(adventurer.class === "Rogue"){
+                roll += adventurer.charisma * 1.5;
+            } else {
+                roll += adventurer.charisma;
+            } 
+            break;
+        case "Thievery":
+            if(adventurer.class === "Rogue"){
+                roll += adventurer.dexterity * 2;
+            } else if(adventurer.class === "Barbarian"){
+                roll += adventurer.dexterity - (adventurer.strength - adventurer.intellect);
+            } else if(adventurer.class === "Paladin"){
+                roll += adventurer.dexterity - adventurer.charisma;
+            } else {
+                roll += adventurer.dexterity;
+            } 
+            break;
         default:
             break;
     }
 
-    console.log(roll);
+    var result;
     
     if(roll < mission.difficulty){
-        console.log("failure");
+        result = "failure";
     } else {
-        console.log("success");
+        result = "success";
     }
     
+    Mission.MissionModel.changeStatus(req.session.account._id, mission._id, (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).json({ error: 'An error occured' });
+        }
         
-    return res.json({ success: "placeholder"});;
+        activeMission = mission._id;
+
+        const miss = doc;
+        
+        miss.status = result;
+        
+        const newMission = new Mission.MissionModel(miss);
+        
+        const missionPromise = newMission.save();
+        
+        missionPromise.then(() => res.json({ redirect: '/maker' }));
+
+        return res.json({ mission: doc });
+    });
+};
+
+const updateMessage = (request, response) => {
+  const req = request;
+  const res = response;
+    
+  Mission.MissionModel.changeStatus(req.session.account._id, activeMission, (err, doc) => { 
+      if (err) {
+          console.log(err);
+          return res.status(400).json({ error: 'An error occured' });
+      }
+      
+      return res.json({ mission: doc });
+  });
+  
 };
 
 
@@ -109,3 +206,4 @@ module.exports.missionPage = missionPage;
 module.exports.getMissions = getMissions;
 module.exports.makeMission = makeMission;
 module.exports.performMission = performMission;
+module.exports.updateMessage = updateMessage;

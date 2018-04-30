@@ -25,6 +25,11 @@ const MissionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+    
+  status: {
+      type: String,
+      default: "failure",
+  },
 
   owner: {
     type: mongoose.Schema.ObjectId,
@@ -51,6 +56,17 @@ MissionSchema.statics.findByOwner = (ownerId, callback) => {
 
   return MissionModel.find(search).select('title difficulty type').exec(callback);
 };
+
+MissionSchema.statics.changeStatus = (ownerId, searchedId, callback) => {
+  const search = {
+    owner: convertId(ownerId),
+    _id: convertId(searchedId),
+  };
+
+  return MissionModel.findOne(search).exec(callback);
+};
+
+
 
 MissionModel = mongoose.model('Mission', MissionSchema);
 

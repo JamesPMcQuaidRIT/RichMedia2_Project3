@@ -25,7 +25,9 @@ const handleLevelUp = (e) => {
     sendAjax('POST', e.target.action, $(e.target).serialize(), function(){
         loadAdventurersFromServer(token);
     });
-}
+
+    return false;
+};
 
 const handleSpell = (e) => {
     e.preventDefault();
@@ -91,7 +93,7 @@ const handleBarracks = (e) => {
     console.dir($("#barracksForm").serialize());
             
     sendAjax('POST', $("#barracksForm").attr("action"), $("#barracksForm").serialize(), function(){
-        loadInfoToBarracks(token);
+        displayMissionResult(token);
     });
     return false;
 };
@@ -552,10 +554,39 @@ const renderBarracks = (csrf, advents, sps, weps, miss) => {
     );
 };
 
+const displayMissionResult = (csrf) => {
+    sendAjax('GET', '/updateBarracksMessage', null, (data) => {
+        if(data.mission.status === "success"){
+            ReactDOM.render(
+                <ResultMessage result="success" />, document.querySelector("#data")
+            );
+        } else{
+            ReactDOM.render(
+                <ResultMessage result="failure" />, document.querySelector("#data")
+            );
+        }
+    });
+}
 
 const EmptyList = (props) => {
     return(null);
 };
+
+const ResultMessage = (props) =>{
+    if(props.result === "success"){
+        return (
+            <div className="weaponList">
+                <h3 className="empty">Mission Was A Success</h3>
+            </div>
+        );
+    } else {
+        return (
+            <div className="weaponList">
+                <h3 className="empty">Mission Was A Failure</h3>
+            </div>
+        );
+    }
+}
 
 
 const createBarracksWindow = (csrf) => {

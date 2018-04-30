@@ -18,6 +18,7 @@ const router = (app) => {
   app.get('/getMissions', mid.requiresLogin, controllers.Mission.missionPage);
   app.post('/missionMaker', mid.requiresLogin, controllers.Mission.makeMission);
   app.post('/goOnMission', mid.requiresLogin, controllers.Mission.performMission);
+  app.get('/updateBarracksMessage', mid.requiresLogin, controllers.Mission.updateMessage);
   app.get('/changePassword', mid.requiresLogin, controllers.Weapon.weaponPage);
   app.post('/passwordChange', mid.requiresLogin, controllers.Account.changePassword);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);

@@ -27,6 +27,8 @@ var handleLevelUp = function handleLevelUp(e) {
     sendAjax('POST', e.target.action, $(e.target).serialize(), function () {
         loadAdventurersFromServer(token);
     });
+
+    return false;
 };
 
 var handleSpell = function handleSpell(e) {
@@ -93,7 +95,7 @@ var handleBarracks = function handleBarracks(e) {
     console.dir($("#barracksForm").serialize());
 
     sendAjax('POST', $("#barracksForm").attr("action"), $("#barracksForm").serialize(), function () {
-        loadInfoToBarracks(token);
+        displayMissionResult(token);
     });
     return false;
 };
@@ -733,8 +735,42 @@ var renderBarracks = function renderBarracks(csrf, advents, sps, weps, miss) {
     ReactDOM.render(React.createElement(EmptyList, null), document.querySelector("#data"));
 };
 
+var displayMissionResult = function displayMissionResult(csrf) {
+    sendAjax('GET', '/updateBarracksMessage', null, function (data) {
+        if (data.mission.status === "success") {
+            ReactDOM.render(React.createElement(ResultMessage, { result: "success" }), document.querySelector("#data"));
+        } else {
+            ReactDOM.render(React.createElement(ResultMessage, { result: "failure" }), document.querySelector("#data"));
+        }
+    });
+};
+
 var EmptyList = function EmptyList(props) {
     return null;
+};
+
+var ResultMessage = function ResultMessage(props) {
+    if (props.result === "success") {
+        return React.createElement(
+            "div",
+            { className: "weaponList" },
+            React.createElement(
+                "h3",
+                { className: "empty" },
+                "Mission Was A Success"
+            )
+        );
+    } else {
+        return React.createElement(
+            "div",
+            { className: "weaponList" },
+            React.createElement(
+                "h3",
+                { className: "empty" },
+                "Mission Was A Failure"
+            )
+        );
+    }
 };
 
 var createBarracksWindow = function createBarracksWindow(csrf) {
