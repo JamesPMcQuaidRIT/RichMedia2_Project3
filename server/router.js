@@ -15,6 +15,9 @@ const router = (app) => {
   app.post('/spellMaker', mid.requiresLogin, controllers.Spell.makeSpell);
   app.get('/getWeapons', mid.requiresLogin, controllers.Weapon.weaponPage);
   app.post('/weaponMaker', mid.requiresLogin, controllers.Weapon.makeWeapon);
+  app.get('/getMissions', mid.requiresLogin, controllers.Mission.missionPage);
+  app.post('/missionMaker', mid.requiresLogin, controllers.Mission.makeMission);
+  app.post('/goOnMission', mid.requiresLogin, controllers.Mission.performMission);
   app.get('/changePassword', mid.requiresLogin, controllers.Weapon.weaponPage);
   app.post('/passwordChange', mid.requiresLogin, controllers.Account.changePassword);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);

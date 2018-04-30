@@ -23,9 +23,9 @@ const makeAdventurer = (req, res) => {
     + parseInt(req.body.intellect, 10) + parseInt(req.body.charisma, 10);
 
   const pointsAllowed = parseInt(req.body.level, 10) * 5;
-    
+
   console.log(totalStats);
-    console.log(pointsAllowed);
+  console.log(pointsAllowed);
 
   if (totalStats > pointsAllowed) {
     return res.status(400).json({ error: 'That adventurer has too many stats for that level' });

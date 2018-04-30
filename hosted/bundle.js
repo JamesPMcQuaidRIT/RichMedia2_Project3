@@ -24,8 +24,6 @@ var handleAdventurer = function handleAdventurer(e) {
 var handleLevelUp = function handleLevelUp(e) {
     e.preventDefault();
 
-    console.dir(e.target);
-
     sendAjax('POST', e.target.action, $(e.target).serialize(), function () {
         loadAdventurersFromServer(token);
     });
@@ -91,6 +89,30 @@ var handlePassword = function handlePassword(e) {
 
 var handleBarracks = function handleBarracks(e) {
     e.preventDefault();
+
+    console.dir($("#barracksForm").serialize());
+
+    sendAjax('POST', $("#barracksForm").attr("action"), $("#barracksForm").serialize(), function () {
+        loadInfoToBarracks(token);
+    });
+    return false;
+};
+
+var handleMission = function handleMission(e) {
+    e.preventDefault();
+
+    $("#adventurerMessage").animate({ width: 'hide' }, 350);
+
+    if ($("#missionTitle").val() == '' || $("#missionDifficulty").val() == '') {
+        handleError("Dear Adventurer, you must fill all fields");
+        return false;
+    }
+
+    console.dir($("#missionForm").serialize());
+
+    sendAjax('POST', $("#missionForm").attr("action"), $("#missionForm").serialize(), function () {
+        loadMissionsFromServer(token);
+    });
 
     return false;
 };
@@ -215,6 +237,30 @@ var AdventurerList = function AdventurerList(props) {
                 { className: "adventurerClass" },
                 "Class: ",
                 adventurer.class
+            ),
+            React.createElement(
+                "h3",
+                { className: "adventurerClass" },
+                "Strength: ",
+                adventurer.strength
+            ),
+            React.createElement(
+                "h3",
+                { className: "adventurerClass" },
+                "Dexterity: ",
+                adventurer.dexterity
+            ),
+            React.createElement(
+                "h3",
+                { className: "adventurerClass" },
+                "Intellect: ",
+                adventurer.intellect
+            ),
+            React.createElement(
+                "h3",
+                { className: "adventurerClass" },
+                "Charisma: ",
+                adventurer.charisma
             ),
             React.createElement(
                 "form",
@@ -507,7 +553,7 @@ var BarracksForm = function BarracksForm(props) {
         { id: "barracksForm",
             onSubmit: handleBarracks,
             name: "barracksForm",
-            action: "/barracksMaker",
+            action: "/goOnMission",
             method: "POST",
             className: "barracksForm"
         },
@@ -522,49 +568,169 @@ var BarracksForm = function BarracksForm(props) {
             { htmlFor: "weapon" },
             "Weapon: "
         ),
-        React.createElement("select", { id: "weapon", type: "text", name: "weapon" }),
+        React.createElement(WeaponContent, { weapons: props.weapons }),
         React.createElement(
             "label",
-            { htmlFor: "rarity" },
+            { htmlFor: "spell" },
             "Spell: "
         ),
-        React.createElement("select", { id: "spell", type: "text", name: "spell" }),
+        React.createElement(SpellContent, { spells: props.spells }),
+        React.createElement(
+            "label",
+            { htmlFor: "mission" },
+            "Mission: "
+        ),
+        React.createElement(MissionContent, { missions: props.missions }),
         React.createElement("input", { id: "csrfValue", type: "hidden", name: "_csrf", value: props.csrf }),
-        React.createElement("input", { className: "makeWeaponSubmit", type: "submit", value: "Make Weapon" })
+        React.createElement("input", { className: "goAdventureSubmit", type: "submit", value: "Go Adventure" })
     );
 };
 
 var AdventurerContent = function AdventurerContent(props) {
-    console.dir(props);
     if (props.adventurers.length === 0) {
         return React.createElement(
-            "option",
-            null,
-            "No Adventurers"
+            "select",
+            { id: "adventurer", type: "text", name: "adventurer" },
+            React.createElement(
+                "option",
+                null,
+                "No Adventurers"
+            )
         );
     }
 
     var adventurerOptions = props.adventurers.map(function (adventurer) {
         return React.createElement(
             "option",
-            { value: "{adventurer}" },
+            { value: JSON.stringify(adventurer) },
             adventurer.name
         );
     });
 
     return React.createElement(
         "select",
-        { id: "adventurer", type: "text", name: "adventurer" },
+        { id: "adventurerSelect", type: "text", name: "adventurer" },
         adventurerOptions
     );
 };
 
-var loadAdventurersToBarracks = function loadAdventurersToBarracks(csrf) {
-    sendAjax('GET', '/getAdventurers', null, function (data) {
-        ReactDOM.render(React.createElement(BarracksForm, { adventurers: data.adventurer, csrf: csrf }), document.querySelector("#make"));
+var WeaponContent = function WeaponContent(props) {
+    if (props.weapons.length === 0) {
+        return React.createElement(
+            "select",
+            { id: "weapon", type: "text", name: "weapon" },
+            React.createElement(
+                "option",
+                null,
+                "No Weapons"
+            )
+        );
+    }
 
-        ReactDOM.render(React.createElement(EmptyList, null), document.querySelector("#data"));
+    var weaponOptions = props.weapons.map(function (weapon) {
+        return React.createElement(
+            "option",
+            { value: JSON.stringify(weapon) },
+            weapon.name
+        );
     });
+
+    return React.createElement(
+        "select",
+        { id: "weapon", type: "text", name: "weapon" },
+        weaponOptions
+    );
+};
+
+var SpellContent = function SpellContent(props) {
+    if (props.spells.length === 0) {
+        return React.createElement(
+            "select",
+            { id: "spell", type: "text", name: "spell" },
+            React.createElement(
+                "option",
+                null,
+                "No Spells"
+            )
+        );
+    }
+
+    var spellOptions = props.spells.map(function (spell) {
+        return React.createElement(
+            "option",
+            { value: JSON.stringify(spell) },
+            spell.name
+        );
+    });
+
+    return React.createElement(
+        "select",
+        { id: "spell", type: "text", name: "spell" },
+        spellOptions
+    );
+};
+
+var MissionContent = function MissionContent(props) {
+    console.dir(props);
+    if (props.missions.length === 0) {
+        return React.createElement(
+            "select",
+            { id: "mission", type: "text", name: "mission" },
+            React.createElement(
+                "option",
+                null,
+                "No Missions"
+            )
+        );
+    }
+
+    var missionOptions = props.missions.map(function (mission) {
+        return React.createElement(
+            "option",
+            { value: JSON.stringify(mission) },
+            mission.title
+        );
+    });
+
+    return React.createElement(
+        "select",
+        { id: "mission", type: "text", name: "mission" },
+        missionOptions
+    );
+};
+
+var loadInfoToBarracks = function loadInfoToBarracks(csrf) {
+    var advents = [];
+    var weps = [];
+    var sps = [];
+    var miss = [];
+
+    sendAjax('GET', '/getAdventurers', null, function (data) {
+        advents = data.adventurer;
+        renderBarracks(csrf, advents, sps, weps, miss);
+    });
+
+    sendAjax('GET', '/getWeapons', null, function (data) {
+        weps = data.weapon;
+        renderBarracks(csrf, advents, sps, weps, miss);
+    });
+
+    sendAjax('GET', '/getSpells', null, function (data) {
+        sps = data.spell;
+        renderBarracks(csrf, advents, sps, weps, miss);
+    });
+
+    sendAjax('GET', '/getMissions', null, function (data) {
+        console.dir(data);
+        miss = data.mission;
+        renderBarracks(csrf, advents, sps, weps, miss);
+    });
+};
+
+var renderBarracks = function renderBarracks(csrf, advents, sps, weps, miss) {
+    ReactDOM.render(React.createElement(BarracksForm, { adventurers: advents, spells: sps, weapons: weps, missions: miss, csrf: csrf }), document.querySelector("#make"));
+
+    ReactDOM.render(React.createElement(EmptyList, null), document.querySelector("#data"));
 };
 
 var EmptyList = function EmptyList(props) {
@@ -572,12 +738,143 @@ var EmptyList = function EmptyList(props) {
 };
 
 var createBarracksWindow = function createBarracksWindow(csrf) {
-    console.log("Test");
-    ReactDOM.render(React.createElement(BarracksForm, { adventurers: [], csrf: csrf }), document.querySelector("#make"));
+    ReactDOM.render(React.createElement(BarracksForm, { adventurers: [], weapons: [], spells: [], missions: [], csrf: csrf }), document.querySelector("#make"));
 
     ReactDOM.render(React.createElement(EmptyList, null), document.querySelector("#data"));
 
-    loadAdventurersToBarracks(csrf);
+    loadInfoToBarracks(csrf);
+};
+
+var MissionForm = function MissionForm(props) {
+    return React.createElement(
+        "form",
+        { id: "missionForm",
+            onSubmit: handleMission,
+            name: "missionForm",
+            action: "/missionMaker",
+            method: "POST",
+            className: "missionForm"
+        },
+        React.createElement(
+            "label",
+            { htmlFor: "title" },
+            "Title: "
+        ),
+        React.createElement("input", { id: "missionTitle", type: "text", name: "title", placeholder: "Mission Title" }),
+        React.createElement(
+            "label",
+            { htmlFor: "difficulty" },
+            "Difficulty: "
+        ),
+        React.createElement("input", { id: "missionDifficulty", type: "text", name: "difficulty", placeholder: "Mission Difficulty" }),
+        React.createElement(
+            "label",
+            { htmlFor: "type" },
+            "Type: "
+        ),
+        React.createElement(
+            "select",
+            { id: "missionType", name: "type" },
+            React.createElement(
+                "option",
+                { value: "Extermination" },
+                "Extermination"
+            ),
+            React.createElement(
+                "option",
+                { value: "Diplomatic" },
+                "Diplomatic"
+            ),
+            React.createElement(
+                "option",
+                { value: "Reasearch" },
+                "Reasearch"
+            ),
+            React.createElement(
+                "option",
+                { value: "Assassination" },
+                "Assassination"
+            ),
+            React.createElement(
+                "option",
+                { value: "Exploration" },
+                "Exploration"
+            ),
+            React.createElement(
+                "option",
+                { value: "Trade" },
+                "Trade"
+            ),
+            React.createElement(
+                "option",
+                { value: "Thievery" },
+                "Thievery"
+            )
+        ),
+        React.createElement("input", { id: "csrfValue", type: "hidden", name: "_csrf", value: props.csrf }),
+        React.createElement("input", { className: "makeMissionSubmit", type: "submit", value: "Create Mission" })
+    );
+};
+
+var MissionList = function MissionList(props) {
+    console.dir(props);
+    if (props.missions.length === 0) {
+        return React.createElement(
+            "div",
+            { className: "missionList" },
+            React.createElement(
+                "h3",
+                { className: "empty" },
+                "No Missions created yet"
+            )
+        );
+    }
+
+    var missionNodes = props.missions.map(function (mission) {
+        return React.createElement(
+            "div",
+            { "data-key": mission._id, className: "adventurer" },
+            React.createElement("img", { src: "/assets/img/missionIcon.png", alt: "mission icon", className: "adventurerFace" }),
+            React.createElement(
+                "h3",
+                { className: "adventurerName" },
+                "Title: ",
+                mission.title
+            ),
+            React.createElement(
+                "h3",
+                { className: "adventurerLevel" },
+                "Difficulty: ",
+                mission.difficulty
+            ),
+            React.createElement(
+                "h3",
+                { className: "adventurerClass" },
+                "Type: ",
+                mission.type
+            )
+        );
+    });
+
+    return React.createElement(
+        "div",
+        { className: "missionList" },
+        missionNodes
+    );
+};
+
+var loadMissionsFromServer = function loadMissionsFromServer(csrf) {
+    sendAjax('GET', '/getMissions', null, function (data) {
+        ReactDOM.render(React.createElement(MissionList, { missions: data.mission, csrf: csrf }), document.querySelector("#data"));
+    });
+};
+
+var createMissionsWindow = function createMissionsWindow(csrf) {
+    ReactDOM.render(React.createElement(MissionForm, { csrf: csrf }), document.querySelector("#make"));
+
+    ReactDOM.render(React.createElement(MissionList, { missions: [], csrf: csrf }), document.querySelector("#data"));
+
+    loadMissionsFromServer(csrf);
 };
 
 var setup = function setup(csrf) {
@@ -589,6 +886,7 @@ var setup = function setup(csrf) {
     var weaponButton = document.querySelector("#weaponButton");
     var passwordButton = document.querySelector("#passwordButton");
     var barracksButton = document.querySelector("#barracksButton");
+    var missionsButton = document.querySelector('#missionsButton');
 
     adventurerButton.addEventListener("click", function (e) {
         e.preventDefault();
@@ -617,6 +915,12 @@ var setup = function setup(csrf) {
     barracksButton.addEventListener("click", function (e) {
         e.preventDefault();
         createBarracksWindow(csrf);
+        return false;
+    });
+
+    missionsButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        createMissionsWindow(csrf);
         return false;
     });
 
