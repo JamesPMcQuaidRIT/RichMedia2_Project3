@@ -77,7 +77,7 @@ nav:nth-child(1) {
 }
 
 #statLabel{
-    display: inline-block;
+     display: inline-block;
     width: 100px;
     margin-left: 5px;
     font-size: 1em;
@@ -109,6 +109,26 @@ nav:nth-child(1) {
 }
 
 .makeAdventurerSubmit:hover {
+    transition: background-color 0.4s ease;
+    background-color: #705D4E;
+}
+
+.statButton {
+    transition: background-color 0.4s ease;
+    display: inline-block;
+    width: 80px;
+    font-size: 1em;
+    float: left;
+    background-color: #5E4E42;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.statButton:link, .statButton:visited, .statButton:hover, .statButton:active {
+    color: white;
+}
+
+.statButton:hover {
     transition: background-color 0.4s ease;
     background-color: #705D4E;
 }
@@ -411,7 +431,7 @@ h3.adventurerName {
 
 h3.adventurerClass {
     float:left;
-    width: 200px;
+    width: 150px;
     font-weight: bold;
     padding-left: 35px;
     font-size: 1.5em;

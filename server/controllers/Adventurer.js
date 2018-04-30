@@ -22,10 +22,7 @@ const makeAdventurer = (req, res) => {
   const totalStats = parseInt(req.body.strength, 10) + parseInt(req.body.dexterity, 10)
     + parseInt(req.body.intellect, 10) + parseInt(req.body.charisma, 10);
 
-  const pointsAllowed = parseInt(req.body.level, 10) * 5;
-
-  console.log(totalStats);
-  console.log(pointsAllowed);
+  const pointsAllowed = parseInt(req.body.level, 10) * 3;
 
   if (totalStats > pointsAllowed) {
     return res.status(400).json({ error: 'That adventurer has too many stats for that level' });
@@ -76,7 +73,8 @@ const getAdventurers = (request, response) => {
 };
 
 const levelUpAdventurer = (req, res) => {
-  Adventurer.AdventurerModel.upLevel(req.session.account._id, req.body._id, (err, doc) => {
+  const advent = JSON.parse(req.body.adventurer);
+  Adventurer.AdventurerModel.upLevel(req.session.account._id, advent._id, (err, doc) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
@@ -96,7 +94,131 @@ const levelUpAdventurer = (req, res) => {
   });
 };
 
+const strengthUpAdventurer = (req, res) => {
+  Adventurer.AdventurerModel.upLevel(req.session.account._id, req.body._id, (err, doc) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    const totalStats = doc.strength + doc.dexterity
+    + doc.intellect + doc.charisma;
+
+    const pointsAllowed = doc.level * 3;
+
+    if (totalStats > pointsAllowed) {
+      return res.status(400).json({ error: 'That adventurer has too many stats for that level' });
+    }
+
+    const adventurer = doc;
+
+    adventurer.strength++;
+
+    const newAdventurer = new Adventurer.AdventurerModel(adventurer);
+
+    const adventurerPromise = newAdventurer.save();
+
+    adventurerPromise.then(() => res.json({ redirect: '/maker' }));
+
+    return res.json({ adventurer: doc });
+  });
+};
+
+const dexterityUpAdventurer = (req, res) => {
+  Adventurer.AdventurerModel.upLevel(req.session.account._id, req.body._id, (err, doc) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    const totalStats = doc.strength + doc.dexterity
+    + doc.intellect + doc.charisma;
+
+    const pointsAllowed = doc.level * 3;
+
+    if (totalStats > pointsAllowed) {
+      return res.status(400).json({ error: 'That adventurer has too many stats for that level' });
+    }
+
+    const adventurer = doc;
+
+    adventurer.dexterity++;
+
+    const newAdventurer = new Adventurer.AdventurerModel(adventurer);
+
+    const adventurerPromise = newAdventurer.save();
+
+    adventurerPromise.then(() => res.json({ redirect: '/maker' }));
+
+    return res.json({ adventurer: doc });
+  });
+};
+
+const intellectUpAdventurer = (req, res) => {
+  Adventurer.AdventurerModel.upLevel(req.session.account._id, req.body._id, (err, doc) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    const totalStats = doc.strength + doc.dexterity
+    + doc.intellect + doc.charisma;
+
+    const pointsAllowed = doc.level * 3;
+
+    if (totalStats > pointsAllowed) {
+      return res.status(400).json({ error: 'That adventurer has too many stats for that level' });
+    }
+
+    const adventurer = doc;
+
+    adventurer.intellect++;
+
+    const newAdventurer = new Adventurer.AdventurerModel(adventurer);
+
+    const adventurerPromise = newAdventurer.save();
+
+    adventurerPromise.then(() => res.json({ redirect: '/maker' }));
+
+    return res.json({ adventurer: doc });
+  });
+};
+
+const charismaUpAdventurer = (req, res) => {
+  Adventurer.AdventurerModel.upLevel(req.session.account._id, req.body._id, (err, doc) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    const totalStats = doc.strength + doc.dexterity
+    + doc.intellect + doc.charisma;
+
+    const pointsAllowed = doc.level * 3;
+
+    if (totalStats > pointsAllowed) {
+      return res.status(400).json({ error: 'That adventurer has too many stats for that level' });
+    }
+
+    const adventurer = doc;
+
+    adventurer.charisma++;
+
+    const newAdventurer = new Adventurer.AdventurerModel(adventurer);
+
+    const adventurerPromise = newAdventurer.save();
+
+    adventurerPromise.then(() => res.json({ redirect: '/maker' }));
+
+    return res.json({ adventurer: doc });
+  });
+};
+
 module.exports.makerPage = makerPage;
 module.exports.getAdventurers = getAdventurers;
 module.exports.make = makeAdventurer;
 module.exports.levelUp = levelUpAdventurer;
+module.exports.strengthUp = strengthUpAdventurer;
+module.exports.dexterityUp = dexterityUpAdventurer;
+module.exports.intellectUp = intellectUpAdventurer;
+module.exports.charismaUp = charismaUpAdventurer;

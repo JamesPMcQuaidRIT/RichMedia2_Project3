@@ -29,6 +29,16 @@ const handleLevelUp = (e) => {
     return false;
 };
 
+const handleStatUp = (e) => {
+    e.preventDefault();
+    
+    sendAjax('POST', e.target.action, $(e.target).serialize(), function(){
+        loadAdventurersFromServer(token);
+    });
+
+    return false;
+};
+
 const handleSpell = (e) => {
     e.preventDefault();
     
@@ -130,7 +140,7 @@ const AdventurerForm = (props) => {
     <input id="adventurerName" type="text" name="name" placeholder="Adventurer Name"/>
     <label htmlFor="level">Level: </label>
     <input id="adventurerLevel" type="text" name="level" placeholder="Adventurer Level"/>
-    <label id="statLabel">Stats(5 points per level):</label>
+    <label id="statLabel">Stats(3 points per level):</label>
     <label htmlFor="level">Strength: </label>
     <input id="adventurerLevel" type="text" name="strength" placeholder="Strength"/>
     <label htmlFor="level">Dexterity: </label>
@@ -168,21 +178,54 @@ const AdventurerList = function(props) {
                 <h3 className="adventurerName">Name: {adventurer.name}</h3>
                 <h3 className="adventurerLevel">Level: {adventurer.level}</h3>
                 <h3 className="adventurerClass">Class: {adventurer.class}</h3>
+                <div className="statBreak"></div>
                 <h3 className="adventurerClass">Strength: {adventurer.strength}</h3>
-                <h3 className="adventurerClass">Dexterity: {adventurer.dexterity}</h3>
-                <h3 className="adventurerClass">Intellect: {adventurer.intellect}</h3>
-                <h3 className="adventurerClass">Charisma: {adventurer.charisma}</h3>
-
-                <form id="levelForm" 
-                    onSubmit={handleLevelUp}
-                    name="levelForm"
-                    action="/level"
+                <form id="strengthForm" 
+                    onSubmit={handleStatUp}
+                    name="strengthForm"
+                    action="/strength"
                     method="POST"
-                    className="levelForm"
+                    className="strengthForm"
                 >
                     <input type="hidden" name="_csrf" value={props.csrf}/>
                     <input id="adventurerNameCheck" name="_id" type="hidden" value={adventurer._id} placeholder="Adventurer Name"/>
-                    <input className="levelButton" type="submit" value="Level Up"/>
+                    <input className="statButton" type="submit" value="Str Up"/>
+                </form>
+                <h3 className="adventurerClass">Dexterity: {adventurer.dexterity}</h3>
+                <form id="dexterityForm" 
+                    onSubmit={handleStatUp}
+                    name="dexterityForm"
+                    action="/dexterity"
+                    method="POST"
+                    className="dexterityForm"
+                >
+                    <input type="hidden" name="_csrf" value={props.csrf}/>
+                    <input id="adventurerNameCheck" name="_id" type="hidden" value={adventurer._id} placeholder="Adventurer Name"/>
+                    <input className="statButton" type="submit" value="Dex Up"/>
+                </form>
+                <h3 className="adventurerClass">Intellect: {adventurer.intellect}</h3>
+                <form id="intellectForm" 
+                    onSubmit={handleStatUp}
+                    name="intellectForm"
+                    action="/intellect"
+                    method="POST"
+                    className="intellectForm"
+                >
+                    <input type="hidden" name="_csrf" value={props.csrf}/>
+                    <input id="adventurerNameCheck" name="_id" type="hidden" value={adventurer._id} placeholder="Adventurer Name"/>
+                    <input className="statButton" type="submit" value="Int Up"/>
+                </form>
+                <h3 className="adventurerClass">Charisma: {adventurer.charisma}</h3>
+                <form id="charismaForm" 
+                    onSubmit={handleStatUp}
+                    name="charismaForm"
+                    action="/charisma"
+                    method="POST"
+                    className="charismaForm"
+                >
+                    <input type="hidden" name="_csrf" value={props.csrf}/>
+                    <input id="adventurerNameCheck" name="_id" type="hidden" value={adventurer._id} placeholder="Adventurer Name"/>
+                    <input className="statButton" type="submit" value="Char Up"/>
                 </form>
             </div>
         );
@@ -428,7 +471,7 @@ const BarracksForm = (props) => {
 const AdventurerContent = function(props){
     if(props.adventurers.length === 0) {
         return (
-            <select id="adventurer" type="text" name="adventurer">
+            <select id="adventurerSelect" type="text" name="adventurer">
                 <option>No Adventurers</option>
             </select>
         );
@@ -557,6 +600,12 @@ const renderBarracks = (csrf, advents, sps, weps, miss) => {
 const displayMissionResult = (csrf) => {
     sendAjax('GET', '/updateBarracksMessage', null, (data) => {
         if(data.mission.status === "success"){
+            const send = {
+                adventurer: document.querySelector("#adventurerSelect").value,
+                _csrf: csrf,
+            };
+            sendAjax('POST', "/level", send, function(){
+            });
             ReactDOM.render(
                 <ResultMessage result="success" />, document.querySelector("#data")
             );

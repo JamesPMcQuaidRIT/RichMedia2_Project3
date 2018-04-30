@@ -25,10 +25,10 @@ const MissionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-    
+
   status: {
-      type: String,
-      default: "failure",
+    type: String,
+    default: 'failure',
   },
 
   owner: {
@@ -65,7 +65,6 @@ MissionSchema.statics.changeStatus = (ownerId, searchedId, callback) => {
 
   return MissionModel.findOne(search).exec(callback);
 };
-
 
 
 MissionModel = mongoose.model('Mission', MissionSchema);

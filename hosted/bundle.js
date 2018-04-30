@@ -31,6 +31,16 @@ var handleLevelUp = function handleLevelUp(e) {
     return false;
 };
 
+var handleStatUp = function handleStatUp(e) {
+    e.preventDefault();
+
+    sendAjax('POST', e.target.action, $(e.target).serialize(), function () {
+        loadAdventurersFromServer(token);
+    });
+
+    return false;
+};
+
 var handleSpell = function handleSpell(e) {
     e.preventDefault();
 
@@ -144,7 +154,7 @@ var AdventurerForm = function AdventurerForm(props) {
         React.createElement(
             "label",
             { id: "statLabel" },
-            "Stats(5 points per level):"
+            "Stats(3 points per level):"
         ),
         React.createElement(
             "label",
@@ -240,11 +250,25 @@ var AdventurerList = function AdventurerList(props) {
                 "Class: ",
                 adventurer.class
             ),
+            React.createElement("div", { className: "statBreak" }),
             React.createElement(
                 "h3",
                 { className: "adventurerClass" },
                 "Strength: ",
                 adventurer.strength
+            ),
+            React.createElement(
+                "form",
+                { id: "strengthForm",
+                    onSubmit: handleStatUp,
+                    name: "strengthForm",
+                    action: "/strength",
+                    method: "POST",
+                    className: "strengthForm"
+                },
+                React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+                React.createElement("input", { id: "adventurerNameCheck", name: "_id", type: "hidden", value: adventurer._id, placeholder: "Adventurer Name" }),
+                React.createElement("input", { className: "statButton", type: "submit", value: "Str Up" })
             ),
             React.createElement(
                 "h3",
@@ -253,10 +277,36 @@ var AdventurerList = function AdventurerList(props) {
                 adventurer.dexterity
             ),
             React.createElement(
+                "form",
+                { id: "dexterityForm",
+                    onSubmit: handleStatUp,
+                    name: "dexterityForm",
+                    action: "/dexterity",
+                    method: "POST",
+                    className: "dexterityForm"
+                },
+                React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+                React.createElement("input", { id: "adventurerNameCheck", name: "_id", type: "hidden", value: adventurer._id, placeholder: "Adventurer Name" }),
+                React.createElement("input", { className: "statButton", type: "submit", value: "Dex Up" })
+            ),
+            React.createElement(
                 "h3",
                 { className: "adventurerClass" },
                 "Intellect: ",
                 adventurer.intellect
+            ),
+            React.createElement(
+                "form",
+                { id: "intellectForm",
+                    onSubmit: handleStatUp,
+                    name: "intellectForm",
+                    action: "/intellect",
+                    method: "POST",
+                    className: "intellectForm"
+                },
+                React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+                React.createElement("input", { id: "adventurerNameCheck", name: "_id", type: "hidden", value: adventurer._id, placeholder: "Adventurer Name" }),
+                React.createElement("input", { className: "statButton", type: "submit", value: "Int Up" })
             ),
             React.createElement(
                 "h3",
@@ -266,16 +316,16 @@ var AdventurerList = function AdventurerList(props) {
             ),
             React.createElement(
                 "form",
-                { id: "levelForm",
-                    onSubmit: handleLevelUp,
-                    name: "levelForm",
-                    action: "/level",
+                { id: "charismaForm",
+                    onSubmit: handleStatUp,
+                    name: "charismaForm",
+                    action: "/charisma",
                     method: "POST",
-                    className: "levelForm"
+                    className: "charismaForm"
                 },
                 React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
                 React.createElement("input", { id: "adventurerNameCheck", name: "_id", type: "hidden", value: adventurer._id, placeholder: "Adventurer Name" }),
-                React.createElement("input", { className: "levelButton", type: "submit", value: "Level Up" })
+                React.createElement("input", { className: "statButton", type: "submit", value: "Char Up" })
             )
         );
     });
@@ -592,7 +642,7 @@ var AdventurerContent = function AdventurerContent(props) {
     if (props.adventurers.length === 0) {
         return React.createElement(
             "select",
-            { id: "adventurer", type: "text", name: "adventurer" },
+            { id: "adventurerSelect", type: "text", name: "adventurer" },
             React.createElement(
                 "option",
                 null,
@@ -738,6 +788,11 @@ var renderBarracks = function renderBarracks(csrf, advents, sps, weps, miss) {
 var displayMissionResult = function displayMissionResult(csrf) {
     sendAjax('GET', '/updateBarracksMessage', null, function (data) {
         if (data.mission.status === "success") {
+            var send = {
+                adventurer: document.querySelector("#adventurerSelect").value,
+                _csrf: csrf
+            };
+            sendAjax('POST', "/level", send, function () {});
             ReactDOM.render(React.createElement(ResultMessage, { result: "success" }), document.querySelector("#data"));
         } else {
             ReactDOM.render(React.createElement(ResultMessage, { result: "failure" }), document.querySelector("#data"));

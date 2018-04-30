@@ -1,6 +1,7 @@
 const models = require('../models');
 
 const Mission = models.Mission;
+
 let activeMission;
 
 const missionPage = (req, res) => {
@@ -64,141 +65,145 @@ const getMissions = (request, response) => {
 const performMission = (request, response) => {
   const req = request;
   const res = response;
-    
-    if (!req.body.adventurer || !req.body.weapon || !req.body.spell || !req.body.mission) {
-        return res.status(400).json({ error: 'One of your options is invalid' });
-    }
-    
-    const adventurer = JSON.parse(req.body.adventurer);
-    const weapon = JSON.parse(req.body.weapon);
-    const spell = JSON.parse(req.body.spell);
-    const mission = JSON.parse(req.body.mission);
-    
-    var roll = Math.random() * 20;
-    
-    switch(mission.type){
-        case "Extermination":
-            if(adventurer.class === "Wizard"){
-                roll += adventurer.intellect;
-            } else if(adventurer.class === "Monk"){
-                roll += adventurer.dexterity;
-            } else if(adventurer.class === "Barbarian"){
-                roll += adventurer.strength * 2
-            } else {
-                roll += adventurer.strength;
-            } 
-            break;
-        case "Diplomatic":
-            if(adventurer.class === "Paladin"){
-                roll += adventurer.charisma * 2;
-            } else {
-                roll += adventurer.charisma;
-            } 
-            break;
-        case "Research":
-            if(adventurer.class === "Wizard"){
-                roll += adventurer.intellect * 2;
-            } else if(adventurer.class === "Barbarian"){
-                roll += adventurer.intellect/2;
-            } else if(adventurer.class === "Rogue"){
-                roll += adventurer.intellect + adventurer.dexterity/2;
-            }else {
-                roll += adventurer.intellect;
-            } 
-            break;
-        case "Assassination":
-            if(adventurer.class === "Rogue"){
-                roll += adventurer.dexterity * 2;
-            } else if(adventurer.class === "Barbarian"){
-                roll += adventurer.dexterity + adventurer.strength/2;
-            } else if(adventurer.class === "Paladin"){
-                roll += adventurer.dexterity - adventurer.charisma;
-            }else {
-                roll += adventurer.dexterity;
-            } 
-            break;
-        case "Exploration":
-            if(adventurer.class === "Wizard"){
-                roll += adventurer.intellect - (10 - adventurer.strength);
-            } else if(adventurer.class === "Barbarian"){
-                roll += adventurer.intellect/2 + adventurer.strength/2;
-            } else if(adventurer.class === "Paladin"){
-                roll += adventurer.intellect/2 + adventurer.charisma/2;
-            } else {
-                roll += adventurer.intellect;
-            } 
-            break;
-       case "Trade":
-            if(adventurer.class === "Paladin"){
-                roll += adventurer.charisma * 2;
-            } else if(adventurer.class === "Barbarian"){
-                roll += adventurer.charisma/2 + adventurer.strength/2;
-            } else if(adventurer.class === "Wizard"){
-                roll += adventurer.intellect/2 + adventurer.charisma/2;
-            } else if(adventurer.class === "Rogue"){
-                roll += adventurer.charisma * 1.5;
-            } else {
-                roll += adventurer.charisma;
-            } 
-            break;
-        case "Thievery":
-            if(adventurer.class === "Rogue"){
-                roll += adventurer.dexterity * 2;
-            } else if(adventurer.class === "Barbarian"){
-                roll += adventurer.dexterity - (adventurer.strength - adventurer.intellect);
-            } else if(adventurer.class === "Paladin"){
-                roll += adventurer.dexterity - adventurer.charisma;
-            } else {
-                roll += adventurer.dexterity;
-            } 
-            break;
-        default:
-            break;
+
+  if (!req.body.adventurer || !req.body.weapon || !req.body.spell || !req.body.mission) {
+    return res.status(400).json({ error: 'One of your options is invalid' });
+  }
+
+  const adventurer = JSON.parse(req.body.adventurer);
+  const weapon = JSON.parse(req.body.weapon);
+  const spell = JSON.parse(req.body.spell);
+  const mission = JSON.parse(req.body.mission);
+
+  let roll = Math.random() * 20;
+
+  switch (mission.type) {
+    case 'Extermination':
+      if (adventurer.class === 'Wizard') {
+        roll += adventurer.intellect;
+      } else if (adventurer.class === 'Monk') {
+        roll += adventurer.dexterity;
+      } else if (adventurer.class === 'Barbarian') {
+        roll += adventurer.strength * 2;
+      } else {
+        roll += adventurer.strength;
+      }
+      roll += weapon.damage;
+      break;
+    case 'Diplomatic':
+      if (adventurer.class === 'Paladin') {
+        roll += adventurer.charisma * 2;
+      } else {
+        roll += adventurer.charisma;
+      }
+      break;
+    case 'Research':
+      if (adventurer.class === 'Wizard') {
+        roll += adventurer.intellect * 2;
+      } else if (adventurer.class === 'Barbarian') {
+        roll += adventurer.intellect / 2;
+      } else if (adventurer.class === 'Rogue') {
+        roll += adventurer.intellect + adventurer.dexterity / 2;
+      } else {
+        roll += adventurer.intellect;
+      }
+      roll += spell.level;
+      break;
+    case 'Assassination':
+      if (adventurer.class === 'Rogue') {
+        roll += adventurer.dexterity * 2;
+      } else if (adventurer.class === 'Barbarian') {
+        roll += adventurer.dexterity + adventurer.strength / 2;
+      } else if (adventurer.class === 'Paladin') {
+        roll += adventurer.dexterity - adventurer.charisma;
+      } else {
+        roll += adventurer.dexterity;
+      }
+      roll += weapon.damage;
+      break;
+    case 'Exploration':
+      if (adventurer.class === 'Wizard') {
+        roll += adventurer.intellect - (10 - adventurer.strength);
+      } else if (adventurer.class === 'Barbarian') {
+        roll += adventurer.intellect / 2 + adventurer.strength / 2;
+      } else if (adventurer.class === 'Paladin') {
+        roll += adventurer.intellect / 2 + adventurer.charisma / 2;
+      } else {
+        roll += adventurer.intellect;
+      }
+      break;
+    case 'Trade':
+      if (adventurer.class === 'Paladin') {
+        roll += adventurer.charisma * 2;
+      } else if (adventurer.class === 'Barbarian') {
+        roll += adventurer.charisma / 2 + adventurer.strength / 2;
+      } else if (adventurer.class === 'Wizard') {
+        roll += adventurer.intellect / 2 + adventurer.charisma / 2;
+      } else if (adventurer.class === 'Rogue') {
+        roll += adventurer.charisma * 1.5;
+      } else {
+        roll += adventurer.charisma;
+      }
+      break;
+    case 'Thievery':
+      if (adventurer.class === 'Rogue') {
+        roll += adventurer.dexterity * 2;
+      } else if (adventurer.class === 'Barbarian') {
+        roll += adventurer.dexterity - (adventurer.strength - adventurer.intellect);
+      } else if (adventurer.class === 'Paladin') {
+        roll += adventurer.dexterity - adventurer.charisma;
+      } else {
+        roll += adventurer.dexterity;
+      }
+      break;
+    default:
+      break;
+  }
+
+  let result;
+
+  if (roll < mission.difficulty) {
+    result = 'failure';
+  } else {
+    result = 'success';
+  }
+
+  Mission.MissionModel.changeStatus(req.session.account._id, mission._id, (err, doc) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
     }
 
-    var result;
-    
-    if(roll < mission.difficulty){
-        result = "failure";
-    } else {
-        result = "success";
-    }
-    
-    Mission.MissionModel.changeStatus(req.session.account._id, mission._id, (err, doc) => {
-        if (err) {
-          console.log(err);
-          return res.status(400).json({ error: 'An error occured' });
-        }
-        
-        activeMission = mission._id;
+    activeMission = mission._id;
 
-        const miss = doc;
-        
-        miss.status = result;
-        
-        const newMission = new Mission.MissionModel(miss);
-        
-        const missionPromise = newMission.save();
-        
-        missionPromise.then(() => res.json({ redirect: '/maker' }));
+    const miss = doc;
 
-        return res.json({ mission: doc });
-    });
+    miss.status = result;
+
+    const newMission = new Mission.MissionModel(miss);
+
+    const missionPromise = newMission.save();
+
+    missionPromise.then(() => res.json({ redirect: '/maker' }));
+
+    return res.json({ mission: doc });
+  });
+
+  return true;
 };
 
 const updateMessage = (request, response) => {
   const req = request;
   const res = response;
-    
-  Mission.MissionModel.changeStatus(req.session.account._id, activeMission, (err, doc) => { 
-      if (err) {
-          console.log(err);
-          return res.status(400).json({ error: 'An error occured' });
-      }
-      
-      return res.json({ mission: doc });
+
+  Mission.MissionModel.changeStatus(req.session.account._id, activeMission, (err, doc) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    return res.json({ mission: doc });
   });
-  
 };
 
 
