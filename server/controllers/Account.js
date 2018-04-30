@@ -94,7 +94,8 @@ const changePassword = (request, response) => {
   }
 
     console.log(req.session.account.username);
-  return Account.AccountModel.authenticate(req.session.account.username, req.body.oldPass, (err, account) => {
+  return Account.AccountModel.authenticate(req.session.account.username, 
+                    req.body.oldPass, (err, account) => {
     if (err || !account) {
       return res.status(401).json({ error: 'Wrong Passcode' });
     }
