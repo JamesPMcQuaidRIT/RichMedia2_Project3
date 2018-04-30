@@ -103,7 +103,8 @@ const changePassword = (request, response) => {
     const search = { username: req.session.account.username };
     const newPassword = { password: hash, salt };
 
-    return Account.AccountModel.findOneAndUpdate(search, { $set: newPassword }, (error) => {
+    return Account.AccountModel.findOneAndUpdate(search, 
+      { $set: newPassword }, (error) => {
       if (error) {
         return res.status(401).json({ error: 'Could not update passcode' });
       }
